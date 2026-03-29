@@ -1,4 +1,5 @@
-use ::std::{env, fs, process};
+use std::error::Error;
+use std::{env, fs, process};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -7,14 +8,18 @@ fn main() {
         process::exit(1);
     });
 
-    run(config);
+    if let Err(err) = run(config) {
+        println!("Application error: {err}");
+        process::exit(1);
+    }
 }
 
-fn run(config: Config) {
-    let contents =
-        fs::read_to_string(config.file_path).expect("Something went wrong reading the file");
+fn run(config: Config) -> Result<(), Box<dyn Error>> {
+    let contents = fs::read_to_string(config.file_path)?;
 
     println!("With text:\n{}", contents);
+
+    Ok(())
 }
 
 struct Config {
