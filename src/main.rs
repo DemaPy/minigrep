@@ -6,12 +6,20 @@ use::std:: {
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    let query = &args[1];
-    let file_path = &args[2];
-
-    println!("Searching for {} in {}", query, file_path);
+    let (query, file_path) = parse_config(&args);
 
     let contents = fs::read_to_string(file_path).expect("Something went wrong reading the file");
 
     println!("With text:\n{}", contents);
+}
+
+fn parse_config(args: &[String]) -> (&str, &str) {
+    if args.len() < 3 {
+        panic!("Not enough arguments");
+    }
+
+    let query = &args[1];
+    let file_path = &args[2];
+
+    ( query, file_path )
 }
